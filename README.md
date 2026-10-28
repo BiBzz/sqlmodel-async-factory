@@ -1,4 +1,4 @@
-# async-factory-boy
+# sqlmodel-async-factory
 
 [factory_boy](https://factoryboy.readthedocs.io/) factories that build and
 persist [SQLModel](https://sqlmodel.tiangolo.com/) objects through an async
@@ -21,26 +21,27 @@ and properly: a sub-factory returns an `asyncio.Task` rather than an instance,
 and the parent factory has to await it before passing it to the model
 constructor.
 
+It targets SQLModel rather than plain SQLAlchemy: the lookups go through
+`AsyncSession.exec()`, which SQLModel adds on top of SQLAlchemy's session and
+which returns the model instances instead of rows.
+
 ## Installation
 
 ```bash
-uv add git+https://github.com/BiBzz/async-factory-boy
+uv add sqlmodel-async-factory
 ```
 
 or:
 
 ```bash
-pip install git+https://github.com/BiBzz/async-factory-boy
+pip install sqlmodel-async-factory
 ```
-
-The package is not on PyPI. The name `async-factory-boy` is already taken there
-by an unrelated project, so install it from this repository.
 
 ## Usage
 
 ```python
 import factory
-from async_factory_boy import AsyncSQLModelFactory
+from sqlmodel_async_factory import AsyncSQLModelFactory
 from sqlalchemy.ext.asyncio import create_async_engine
 from sqlmodel import Field, Relationship, SQLModel
 from sqlmodel.ext.asyncio.session import AsyncSession
@@ -120,10 +121,6 @@ through a second session sees the fixtures.
 | factory_boy | >= 3 |
 | SQLAlchemy | >= 2, async engine |
 | SQLModel | >= 0.0.25 |
-
-The factory calls `AsyncSession.exec()`, which is SQLModel's addition to
-SQLAlchemy's `AsyncSession`, so it targets SQLModel rather than plain
-SQLAlchemy models.
 
 ## Licence
 

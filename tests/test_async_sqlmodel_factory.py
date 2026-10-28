@@ -2,7 +2,7 @@ import pytest
 from sqlmodel import select
 from sqlmodel.ext.asyncio.session import AsyncSession
 
-from async_factory_boy import AsyncSQLModelFactory
+from sqlmodel_async_factory import AsyncSQLModelFactory
 from tests.conftest import Hero, Team
 
 

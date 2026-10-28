@@ -6,7 +6,7 @@ from sqlalchemy.ext.asyncio import create_async_engine
 from sqlmodel import Field, Relationship, SQLModel
 from sqlmodel.ext.asyncio.session import AsyncSession
 
-from async_factory_boy import AsyncSQLModelFactory
+from sqlmodel_async_factory import AsyncSQLModelFactory
 
 
 class Team(SQLModel, table=True):

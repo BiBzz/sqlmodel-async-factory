@@ -1,5 +1,5 @@
 [project]
-name = "async-factory-boy"
+name = "sqlmodel-async-factory"
 version = "0.1.0"
 description = "factory_boy factories that build and persist SQLModel objects through an async session"
 readme = "README.md"
@@ -26,14 +26,15 @@ classifiers = [
 ]
 dependencies = [
     "factory-boy>=3",
-    "sqlalchemy>=2",
+    # the asyncio extra pulls greenlet, without which AsyncSession cannot run
+    "sqlalchemy[asyncio]>=2",
     "sqlmodel>=0.0.25",
 ]
 
 [project.urls]
-Homepage = "https://github.com/BiBzz/async-factory-boy"
-Repository = "https://github.com/BiBzz/async-factory-boy"
-Issues = "https://github.com/BiBzz/async-factory-boy/issues"
+Homepage = "https://github.com/BiBzz/sqlmodel-async-factory"
+Repository = "https://github.com/BiBzz/sqlmodel-async-factory"
+Issues = "https://github.com/BiBzz/sqlmodel-async-factory/issues"
 
 [dependency-groups]
 dev = [
