@@ -1,42 +1,60 @@
 import asyncio
 import inspect
+from typing import Any
 
 from factory import Factory, FactoryError
 from factory.alchemy import SQLAlchemyOptions
-from sqlalchemy import select
 from sqlalchemy.exc import IntegrityError, NoResultFound
+from sqlmodel import SQLModel, select
+from sqlmodel.ext.asyncio.session import AsyncSession
+from sqlmodel.sql.expression import SelectOfScalar
+
+
+def _lookup_statement(
+    model_class: type[SQLModel], key_fields: dict[str, Any]
+) -> "SelectOfScalar[Any]":
+    # select().filter_by() drops SQLModel's scalar typing, so exec() would yield Rows
+    statement = select(model_class)
+    for field, value in key_fields.items():
+        statement = statement.where(getattr(model_class, field) == value)
+    return statement
+
+
+class AsyncSQLModelOptions(SQLAlchemyOptions):
+    # factory_boy declares these through OptionDefault, out of reach of a type checker
+    sqlalchemy_session: AsyncSession
+    sqlalchemy_get_or_create: tuple[str, ...]
 
 
 class AsyncSQLModelFactory(Factory):
-    _options_class = SQLAlchemyOptions
+    _options_class = AsyncSQLModelOptions
+    _meta: AsyncSQLModelOptions
+    _original_params: dict[str, Any]
 
     @classmethod
-    def _generate(cls, strategy, params):
+    def _generate(cls, strategy: str, params: dict[str, Any]) -> Any:
         # Original params are used in _get_or_create if it cannot build an
         # object initially due to an IntegrityError being raised
         cls._original_params = params
         return super()._generate(strategy, params)
 
     @classmethod
-    async def create(cls, **kwargs):
+    async def create(cls, **kwargs: Any) -> Any:
         session = cls._meta.sqlalchemy_session
 
         instance = await super().create(**kwargs)
-        # one commit per build to avoid share the same connection
+        # one commit per build to avoid sharing the same connection
         await session.commit()
         return instance
 
     @classmethod
-    def _create(cls, model_class, *args, **kwargs):
-        session = cls._meta.sqlalchemy_session
-
-        async def maker_coroutine():
+    def _create(cls, model_class: type[SQLModel], *args: Any, **kwargs: Any) -> Any:
+        async def maker_coroutine() -> Any:
             for key, value in kwargs.items():
                 # when using SubFactory, you'll have a Task in the corresponding kwarg
                 # await tasks to pass model instances instead
                 if inspect.isawaitable(value):
                     kwargs[key] = await value
-            # replace as needed by your way of creating model instances
 
             if cls._meta.sqlalchemy_get_or_create:
                 return await cls._get_or_create(model_class, *args, **kwargs)
@@ -47,11 +65,15 @@ class AsyncSQLModelFactory(Factory):
         return asyncio.create_task(maker_coroutine())
 
     @classmethod
-    async def create_batch(cls, size, **kwargs):
+    async def create_batch(  # type: ignore[override]
+        cls, size: int, **kwargs: Any
+    ) -> list[Any]:
         return [await cls.create(**kwargs) for _ in range(size)]
 
     @classmethod
-    async def _get_or_create(cls, model_class, *args, **kwargs):
+    async def _get_or_create(
+        cls, model_class: type[SQLModel], *args: Any, **kwargs: Any
+    ) -> Any:
         session = cls._meta.sqlalchemy_session
 
         key_fields = {}
@@ -59,36 +81,39 @@ class AsyncSQLModelFactory(Factory):
             if field not in kwargs:
                 raise FactoryError(
                     "sqlalchemy_get_or_create - "
-                    "Unable to find initialization value for '%s' in factory %s" %
-                    (field, cls.__name__))
+                    f"Unable to find initialization value for '{field}' "
+                    f"in factory {cls.__name__}"
+                )
             key_fields[field] = kwargs.pop(field)
 
-        obj = (await session.exec(select(model_class).filter_by(*args, **key_fields))).first()
+        obj = (await session.exec(_lookup_statement(model_class, key_fields))).first()
+        if obj is not None:
+            return obj
 
-        if not obj:
+        try:
+            return await cls._save(model_class, *args, **key_fields, **kwargs)
+        except IntegrityError as error:
+            await session.rollback()
+            get_or_create_params = {
+                lookup: value
+                for lookup, value in cls._original_params.items()
+                if lookup in cls._meta.sqlalchemy_get_or_create
+            }
+            if not get_or_create_params:
+                raise
             try:
-                obj = await cls._save(model_class, *args, **key_fields, **kwargs)
-            except IntegrityError as e:
-                await session.rollback()
-                get_or_create_params = {
-                    lookup: value
-                    for lookup, value in cls._original_params.items()
-                    if lookup in cls._meta.sqlalchemy_get_or_create
-                }
-                if get_or_create_params:
-                    try:
-                        obj = (await session.exec(select(model_class).filter_by(**get_or_create_params))).one()
-                    except NoResultFound:
-                        # Original params are not a valid lookup and triggered a create(),
-                        # that resulted in an IntegrityError.
-                        raise e
-                else:
-                    raise e
-
-        return obj
+                return (
+                    await session.exec(
+                        _lookup_statement(model_class, get_or_create_params)
+                    )
+                ).one()
+            except NoResultFound:
+                # Original params are not a valid lookup and triggered a create(),
+                # that resulted in an IntegrityError.
+                raise error from None
 
     @classmethod
-    async def _save(cls, model_class, *args, **kwargs):
+    async def _save(cls, model_class: type[SQLModel], *args: Any, **kwargs: Any) -> Any:
         session = cls._meta.sqlalchemy_session
 
         obj = model_class(*args, **kwargs)
