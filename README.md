@@ -24,14 +24,17 @@ constructor.
 ## Installation
 
 ```bash
-uv add async-factory-boy
+uv add git+https://github.com/BiBzz/async-factory-boy
 ```
 
 or:
 
 ```bash
-pip install async-factory-boy
+pip install git+https://github.com/BiBzz/async-factory-boy
 ```
+
+The package is not on PyPI. The name `async-factory-boy` is already taken there
+by an unrelated project, so install it from this repository.
 
 ## Usage
 
