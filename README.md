@@ -122,6 +122,11 @@ through a second session sees the fixtures.
 | SQLAlchemy | >= 2, async engine |
 | SQLModel | >= 0.0.25 |
 
+## Contributing
+
+How to set the project up, the checks CI runs and how a release is cut:
+[CONTRIBUTING.md](CONTRIBUTING.md).
+
 ## Licence
 
 MIT. See [LICENSE](LICENSE).
