@@ -1,0 +1,23 @@
+cff-version: 1.2.0
+message: If you use sqlmodel-async-factory in your work, please cite it as below.
+type: software
+title: sqlmodel-async-factory
+abstract: factory_boy factories that build and persist SQLModel objects through an async session.
+authors:
+  - given-names: Alexandre
+    family-names: BERREBI
+    email: alexandre.berrebi@businessagile.eu
+    affiliation: Business Agile
+    website: https://businessagile.eu/en/about
+version: 0.1.0
+date-released: 2026-10-28
+license: MIT
+url: https://pypi.org/project/sqlmodel-async-factory/
+repository-code: https://gitlab.com/businessagile/libraries/sqlmodel-async-factory
+keywords:
+  - factory-boy
+  - sqlmodel
+  - sqlalchemy
+  - asyncio
+  - testing
+  - fixtures
