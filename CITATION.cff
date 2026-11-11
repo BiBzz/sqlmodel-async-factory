@@ -13,7 +13,7 @@ version: 0.1.0
 date-released: 2026-10-28
 license: MIT
 url: https://pypi.org/project/sqlmodel-async-factory/
-repository-code: https://gitlab.com/businessagile/libraries/sqlmodel-async-factory
+repository-code: https://github.com/BiBzz/sqlmodel-async-factory
 keywords:
   - factory-boy
   - sqlmodel
