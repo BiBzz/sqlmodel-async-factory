@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://sqlmodel-async-factory.businessagile.eu/sitemap.xml

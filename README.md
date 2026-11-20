@@ -11,6 +11,8 @@ the whole `factory_boy` declaration language (`Sequence`, `LazyAttribute`,
 `Faker`, `SubFactory`, `sqlalchemy_get_or_create`) and makes the create step
 awaitable.
 
+**Documentation**: https://sqlmodel-async-factory.businessagile.eu
+
 ## Why it exists
 
 It was extracted from the test suite of a production FastAPI application whose
@@ -98,7 +100,9 @@ async def test_hero_belongs_to_a_team():
 ```
 
 `create` and `create_batch` are coroutines and must be awaited. The rest of the
-`factory_boy` API is unchanged.
+`factory_boy` API is unchanged. The [documentation](https://sqlmodel-async-factory.businessagile.eu)
+covers every feature with examples that the test suite runs, and the
+[limits](https://sqlmodel-async-factory.businessagile.eu/design/#limits).
 
 ## Session settings
 
@@ -127,6 +131,9 @@ through a second session sees the fixtures.
 How to set the project up, the checks CI runs and how a release is cut:
 [CONTRIBUTING.md](CONTRIBUTING.md). What changed between versions:
 [CHANGELOG.md](CHANGELOG.md).
+
+The source is on [GitHub](https://github.com/BiBzz/sqlmodel-async-factory), where
+[issues](https://github.com/BiBzz/sqlmodel-async-factory/issues) and pull requests are welcome.
 
 ## Author
 

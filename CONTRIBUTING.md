@@ -42,6 +42,26 @@ CI replays them on Python 3.10, 3.11, 3.12 and 3.13, so a failure that only
 shows up on a newer interpreter comes back from the pull request rather than
 from your machine.
 
+## The documentation site
+
+The site, https://sqlmodel-async-factory.businessagile.eu, is built from
+`docs/` and `mkdocs.yml` with [zensical](https://zensical.org), which needs
+Python 3.11 or later:
+
+```bash
+UV_PYTHON=3.12 uv sync --group docs
+UV_PYTHON=3.12 uv run zensical serve
+```
+
+The pages are then served on http://localhost:8000. A plain `uv sync` brings
+the environment back to the interpreter in `.python-version`.
+
+Every code example lives in `docs_src/` and is included in the pages from
+there. `tests/test_tutorial/` runs each one and checks what it prints, so a
+change to an example goes with its expected output, in the test and on the
+page. Merge requests build the site, and `development` publishes it on
+GitLab Pages.
+
 ## Commits
 
 Work branches off `development`, the default branch. Everything in the

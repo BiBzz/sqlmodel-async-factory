@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" role="img" aria-label="sqlmodel-async-factory">
+  <g fill="none" stroke="#ffffff" stroke-width="7" stroke-linecap="round">
+    <ellipse cx="54" cy="26" rx="34" ry="11"/>
+    <path d="M20 26 V90 A34 11 0 0 0 88 90 V26"/>
+    <path d="M20 48 A34 11 0 0 0 88 48"/>
+    <path d="M20 69 A34 11 0 0 0 88 69"/>
+  </g>
+  <circle cx="90" cy="90" r="22" fill="#ffffff"/>
+  <g stroke="#5e35b1" stroke-width="7" stroke-linecap="round">
+    <line x1="90" y1="78" x2="90" y2="102"/>
+    <line x1="78" y1="90" x2="102" y2="90"/>
+  </g>
+</svg>

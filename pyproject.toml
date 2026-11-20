@@ -35,9 +35,11 @@ dependencies = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/BiBzz/sqlmodel-async-factory"
+Homepage = "https://sqlmodel-async-factory.businessagile.eu"
+Documentation = "https://sqlmodel-async-factory.businessagile.eu"
 Repository = "https://github.com/BiBzz/sqlmodel-async-factory"
 Issues = "https://github.com/BiBzz/sqlmodel-async-factory/issues"
+Changelog = "https://github.com/BiBzz/sqlmodel-async-factory/blob/development/CHANGELOG.md"
 
 [dependency-groups]
 dev = [
@@ -47,6 +49,10 @@ dev = [
     "pytest-asyncio>=0.24",
     "ruff>=0.6",
 ]
+docs = ["zensical==0.0.71; python_full_version >= '3.11'"]
+
+[tool.uv]
+exclude-newer = "2026-10-28T00:00:00Z"
 
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
@@ -56,13 +62,15 @@ testpaths = ["tests"]
 [tool.ruff]
 line-length = 88
 target-version = "py310"
+# the pages include their code from docs_src, through snippet lines ruff cannot parse
+extend-exclude = ["docs"]
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "UP", "B", "SIM", "C4"]
 
 [tool.mypy]
 python_version = "3.10"
-files = ["src", "tests"]
+files = ["src", "tests", "docs_src"]
 warn_unused_ignores = true
 warn_redundant_casts = true
 no_implicit_optional = true
